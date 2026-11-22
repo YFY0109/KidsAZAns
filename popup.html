@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      width: 420px;
+      max-height: 560px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-size: 13px;
+      background: #1e1e2e;
+      color: #cdd6f4;
+    }
+    .header {
+      padding: 12px 16px;
+      background: #313244;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: sticky;
+      top: 0;
+      z-index: 2;
+    }
+    .settings {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      border-radius: 4px;
+      color: #a6adc8;
+      font-size: 16px;
+      line-height: 1;
+      padding: 4px 6px;
+      cursor: pointer;
+    }
+    .settings:hover {
+      background: #45475a;
+      color: #cdd6f4;
+    }
+    .title {
+      font-size: 14px;
+      font-weight: 600;
+    }
+    .answer-string {
+      padding: 10px 16px;
+      background: #2a2a3c;
+      border-bottom: 1px solid #45475a;
+      font-family: "Courier New", monospace;
+      font-size: 18px;
+      font-weight: 700;
+      color: #a6e3a1;
+      letter-spacing: 3px;
+      word-spacing: 12px;
+      text-align: center;
+      position: sticky;
+      top: 44px;
+      z-index: 1;
+    }
+    .auto-complete {
+      background: #2a2a3c;
+      border-bottom: 1px solid #45475a;
+    }
+    .auto-complete summary {
+      padding: 10px 16px;
+      color: #89b4fa;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .auto-complete-body {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding: 0 16px 12px;
+    }
+    .auto-complete select {
+      width: 100%;
+      padding: 6px 8px;
+      border: 1px solid #585b70;
+      border-radius: 6px;
+      outline: none;
+      background: #1e1e2e;
+      color: #cdd6f4;
+      font-size: 12px;
+    }
+    .auto-complete-steps {
+      font-size: 11px;
+      color: #a6adc8;
+    }
+    .auto-complete-actions {
+      display: flex;
+      gap: 8px;
+    }
+    .auto-start,
+    .auto-cancel {
+      padding: 7px 10px;
+      border: none;
+      border-radius: 6px;
+      font-size: 12px;
+      cursor: pointer;
+    }
+    .auto-start {
+      flex: 1;
+      background: #89b4fa;
+      color: #1e1e2e;
+      font-weight: 600;
+    }
+    .auto-cancel {
+      background: #45475a;
+      color: #cdd6f4;
+    }
+    .auto-complete-status {
+      font-size: 11px;
+      line-height: 1.5;
+      color: #a6adc8;
+    }
+    .auto-complete-status.error {
+      color: #f38ba8;
+    }
+    .body {
+      overflow-y: auto;
+      max-height: 480px;
+    }
+    .empty {
+      padding: 32px 16px;
+      text-align: center;
+      color: #6c7086;
+      line-height: 1.6;
+    }
+    .item {
+      padding: 10px 16px;
+      border-bottom: 1px solid #313244;
+    }
+    .item:last-child {
+      border-bottom: none;
+    }
+    .item .q {
+      color: #a6adc8;
+      font-size: 12px;
+      line-height: 1.5;
+      margin-bottom: 6px;
+    }
+    .item .q-num {
+      color: #89b4fa;
+      font-weight: 600;
+    }
+    .choices {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+    .choice {
+      font-size: 12px;
+      padding: 4px 8px;
+      border-radius: 4px;
+      background: #313244;
+      color: #bac2de;
+      line-height: 1.4;
+    }
+    .choice.correct {
+      background: rgba(166, 227, 161, 0.15);
+      color: #a6e3a1;
+      border-left: 3px solid #a6e3a1;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <span class="title">Kids A-Z 答案助手</span>
+    <button class="settings" id="openOptions" title="设置" aria-label="设置">⚙</button>
+  </div>
+  <div class="answer-string" id="answerString" style="display:none"></div>
+  <details class="auto-complete" id="autoCompletePanel" hidden>
+    <summary>一键完成一本书</summary>
+    <div class="auto-complete-body">
+      <select id="autoCompleteBook"></select>
+      <div class="auto-complete-steps" id="autoCompleteSteps"></div>
+      <div class="auto-complete-actions">
+        <button type="button" class="auto-start" id="startAutoComplete">开始完成</button>
+        <button type="button" class="auto-cancel" id="cancelAutoComplete" hidden>取消</button>
+      </div>
+      <div class="auto-complete-status" id="autoCompleteStatusText"></div>
+    </div>
+  </details>
+  <details class="auto-complete" id="downloadPanel" hidden>
+    <summary>下载一本书</summary>
+    <div class="auto-complete-body">
+      <select id="downloadBook"></select>
+      <div class="auto-complete-steps" id="downloadOptionsSummary"></div>
+      <div class="auto-complete-actions">
+        <button type="button" class="auto-start" id="startDownload">开始下载</button>
+      </div>
+      <div class="auto-complete-status" id="downloadStatusText"></div>
+    </div>
+  </details>
+  <div class="body" id="body">
+    <div class="empty">
+      <div>打开 Kids A-Z 的测验页面<br />答案会自动显示在这里</div>
+    </div>
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html>

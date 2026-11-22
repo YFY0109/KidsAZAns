@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <title>Kids A-Z 答案助手 - 设置</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      min-height: 100vh;
+      padding: 32px 20px 56px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-size: 14px;
+      background: #1e1e2e;
+      color: #cdd6f4;
+    }
+    .page {
+      max-width: 720px;
+      margin: 0 auto;
+    }
+    .page-header {
+      margin-bottom: 18px;
+    }
+    .page-title {
+      font-size: 24px;
+      font-weight: 700;
+    }
+    .page-subtitle {
+      margin-top: 6px;
+      font-size: 13px;
+      line-height: 1.6;
+      color: #a6adc8;
+    }
+    .section {
+      padding: 16px;
+      margin-bottom: 12px;
+      border-radius: 8px;
+      background: #313244;
+    }
+    .master {
+      padding: 18px;
+      border: 1px solid #45475a;
+    }
+    .row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+    .label {
+      font-weight: 500;
+      color: #cdd6f4;
+    }
+    .master .label {
+      font-size: 16px;
+    }
+    .desc {
+      margin-top: 4px;
+      font-size: 12px;
+      line-height: 1.5;
+      color: #a6adc8;
+    }
+    .category {
+      margin-top: 26px;
+    }
+    .category-title {
+      margin-bottom: 8px;
+      padding-left: 4px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      color: #89b4fa;
+    }
+    .feature-group {
+      transition: opacity 0.2s;
+    }
+    .feature-group.disabled {
+      opacity: 0.5;
+    }
+    .toggle {
+      position: relative;
+      flex-shrink: 0;
+      width: 44px;
+      height: 24px;
+      cursor: pointer;
+    }
+    .toggle input {
+      display: none;
+    }
+    .toggle .slider {
+      position: absolute;
+      inset: 0;
+      border-radius: 24px;
+      background: #585b70;
+      transition: 0.2s;
+    }
+    .toggle .slider::after {
+      content: "";
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #cdd6f4;
+      transition: 0.2s;
+    }
+    .toggle input:checked + .slider {
+      background: #a6e3a1;
+    }
+    .toggle input:checked + .slider::after {
+      transform: translateX(20px);
+    }
+    .fields {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 14px;
+    }
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      font-size: 12px;
+      color: #a6adc8;
+    }
+    .field input {
+      width: 100%;
+      padding: 8px 10px;
+      border: 1px solid #585b70;
+      border-radius: 6px;
+      outline: none;
+      background: #1e1e2e;
+      color: #cdd6f4;
+      font-size: 13px;
+    }
+    .field input:focus {
+      border-color: #89b4fa;
+    }
+    .save-button,
+    .clear-button {
+      padding: 8px 12px;
+      border: none;
+      border-radius: 6px;
+      font-size: 13px;
+      cursor: pointer;
+    }
+    .save-button {
+      background: #89b4fa;
+      color: #1e1e2e;
+      font-weight: 600;
+    }
+    .clear-button {
+      background: #45475a;
+      color: #cdd6f4;
+    }
+    .warn {
+      color: #f9e2af;
+    }
+    .sub-row {
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid #45475a;
+    }
+    .number-input {
+      width: 78px;
+      padding: 8px 10px;
+      border: 1px solid #585b70;
+      border-radius: 6px;
+      outline: none;
+      background: #1e1e2e;
+      color: #cdd6f4;
+      font-size: 13px;
+    }
+    .number-input:focus {
+      border-color: #89b4fa;
+    }
+    #autoCompleteOptions.disabled,
+    #downloadOptions.disabled {
+      opacity: 0.5;
+    }
+    .saved {
+      position: fixed;
+      right: 24px;
+      bottom: 24px;
+      padding: 8px 12px;
+      border-radius: 6px;
+      background: #313244;
+      color: #a6e3a1;
+      font-size: 12px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s;
+    }
+    .saved.show {
+      opacity: 1;
+    }
+    .saved.error {
+      color: #f38ba8;
+    }
+    .footer {
+      margin-top: 24px;
+      text-align: center;
+      font-size: 12px;
+      color: #6c7086;
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header class="page-header">
+      <h1 class="page-title">Kids A-Z 答案助手</h1>
+      <p class="page-subtitle">总开关关闭时，答题助手、页面高亮、学生自动登录和阅读解锁都会暂停。</p>
+    </header>
+
+    <section class="section master">
+      <div class="row">
+        <div>
+          <div class="label">启用扩展（所有功能）</div>
+          <div class="desc">一键开启或暂停全部功能</div>
+        </div>
+        <label class="toggle">
+          <input type="checkbox" id="toggleEnabled" checked />
+          <span class="slider"></span>
+        </label>
+      </div>
+    </section>
+
+    <div class="category">
+      <h2 class="category-title">答题助手</h2>
+      <div class="feature-group">
+        <section class="section">
+          <div class="row">
+            <div>
+              <div class="label">自动获取测验答案</div>
+              <div class="desc">拦截 Kids A-Z 测验接口，在弹窗展示答案</div>
+            </div>
+            <label class="toggle">
+              <input type="checkbox" id="toggleQuizAnswers" checked />
+              <span class="slider"></span>
+            </label>
+          </div>
+        </section>
+        <section class="section">
+          <div class="row">
+            <div>
+              <div class="label">页面高亮正确答案</div>
+              <div class="desc">在页面上用绿色边框标记正确选项</div>
+            </div>
+            <label class="toggle">
+              <input type="checkbox" id="toggleHighlight" />
+              <span class="slider"></span>
+            </label>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <div class="category">
+      <h2 class="category-title">阅读</h2>
+      <div class="feature-group">
+        <section class="section">
+          <div class="row">
+            <div>
+              <div class="label">解除阅读速度限制</div>
+              <div class="desc">读阶段翻页过快时仍进入 quiz；关闭则恢复默认限制</div>
+            </div>
+            <label class="toggle">
+              <input type="checkbox" id="toggleIgnoreReadingPace" checked />
+              <span class="slider"></span>
+            </label>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <div class="category">
+      <h2 class="category-title">一键完成</h2>
+      <div class="feature-group">
+        <section class="section">
+          <div class="row">
+            <div>
+              <div class="label">启用一键完成</div>
+              <div class="desc">按下面的步骤自动完成选定的书</div>
+            </div>
+            <label class="toggle">
+              <input type="checkbox" id="toggleAutoComplete" checked />
+              <span class="slider"></span>
+            </label>
+          </div>
+        </section>
+
+        <div id="autoCompleteOptions">
+          <section class="section">
+            <div class="label">入口</div>
+            <div class="desc">两个入口可以同时开启</div>
+            <div class="row sub-row">
+              <div>
+                <div class="label">书目卡片按钮</div>
+                <div class="desc">在 Level Up / Reading Room 书卡上显示“一键完成”</div>
+              </div>
+              <label class="toggle">
+                <input type="checkbox" id="toggleAutoCompleteCard" checked />
+                <span class="slider"></span>
+              </label>
+            </div>
+            <div class="row sub-row">
+              <div>
+                <div class="label">答案弹窗入口</div>
+                <div class="desc">在扩展弹窗中显示书目列表和一键完成按钮</div>
+              </div>
+              <label class="toggle">
+                <input type="checkbox" id="toggleAutoCompletePopup" checked />
+                <span class="slider"></span>
+              </label>
+            </div>
+          </section>
+
+          <section class="section">
+            <div class="label">执行步骤</div>
+            <div class="desc">默认“读 + 题”；AA 级没有 quiz 时会自动跳过</div>
+            <div class="row sub-row">
+              <div>
+                <div class="label">听（Listen）</div>
+                <div class="desc">自动播放并翻页；完成判定仍在验证中</div>
+              </div>
+              <label class="toggle">
+                <input type="checkbox" id="toggleAutoCompleteListen" />
+                <span class="slider"></span>
+              </label>
+            </div>
+            <div class="row sub-row">
+              <div>
+                <div class="label">读（Read）</div>
+                <div class="desc">自动翻页并记录完成</div>
+              </div>
+              <label class="toggle">
+                <input type="checkbox" id="toggleAutoCompleteRead" checked />
+                <span class="slider"></span>
+              </label>
+            </div>
+            <div class="row sub-row">
+              <div>
+                <div class="label">做（Quiz）</div>
+                <div class="desc">使用已捕获的答案自动选择并提交；未勾 Read 时会自动补上前置阅读</div>
+              </div>
+              <label class="toggle">
+                <input type="checkbox" id="toggleAutoCompleteQuiz" checked />
+                <span class="slider"></span>
+              </label>
+            </div>
+          </section>
+
+          <section class="section">
+            <div class="row">
+              <div>
+                <div class="label">补足阅读时长</div>
+                <div class="desc">秒/页；服务端会校验“读得太快”，10 秒/页已实测通过</div>
+              </div>
+              <input type="number" id="readingSecondsPerPage" class="number-input" min="1" max="60" step="1" value="10" />
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+
+    <div class="category">
+      <h2 class="category-title">下载</h2>
+      <div class="feature-group">
+        <section class="section">
+          <div class="row">
+            <div>
+              <div class="label">启用下载</div>
+              <div class="desc">下载指定书的页图、朗读音频或当前页</div>
+            </div>
+            <label class="toggle">
+              <input type="checkbox" id="toggleDownload" checked />
+              <span class="slider"></span>
+            </label>
+          </div>
+        </section>
+
+        <div id="downloadOptions">
+          <section class="section">
+            <div class="label">入口</div>
+            <div class="desc">两个入口可以同时开启</div>
+            <div class="row sub-row">
+              <div>
+                <div class="label">书目卡片下载按钮</div>
+                <div class="desc">在书卡上显示“下载”</div>
+              </div>
+              <label class="toggle">
+                <input type="checkbox" id="toggleDownloadCard" checked />
+                <span class="slider"></span>
+              </label>
+            </div>
+            <div class="row sub-row">
+              <div>
+                <div class="label">答案弹窗下载入口</div>
+                <div class="desc">在扩展弹窗中选择书并下载</div>
+              </div>
+              <label class="toggle">
+                <input type="checkbox" id="toggleDownloadPopup" checked />
+                <span class="slider"></span>
+              </label>
+            </div>
+          </section>
+
+          <section class="section">
+            <div class="label">页图输出</div>
+            <div class="desc">默认只下载每页图片；ZIP / PDF 为独立附加输出</div>
+            <div class="row sub-row">
+              <div>
+                <div class="label">每页图片</div>
+                <div class="desc">按页下载 JPG</div>
+              </div>
+              <label class="toggle">
+                <input type="checkbox" id="toggleDownloadImages" checked />
+                <span class="slider"></span>
+              </label>
+            </div>
+            <div class="row sub-row">
+              <div>
+                <div class="label">打包 ZIP</div>
+                <div class="desc">把页图按页序打包</div>
+              </div>
+              <label class="toggle">
+                <input type="checkbox" id="toggleDownloadZip" />
+                <span class="slider"></span>
+              </label>
+            </div>
+            <div class="row sub-row">
+              <div>
+                <div class="label">打包 PDF</div>
+                <div class="desc">每页一张图生成 PDF</div>
+              </div>
+              <label class="toggle">
+                <input type="checkbox" id="toggleDownloadPdf" />
+                <span class="slider"></span>
+              </label>
+            </div>
+          </section>
+
+          <section class="section">
+            <div class="row">
+              <div>
+                <div class="label">下载朗读音频</div>
+                <div class="desc">按页收集朗读音频；分段时可合并</div>
+              </div>
+              <label class="toggle">
+                <input type="checkbox" id="toggleDownloadAudio" />
+                <span class="slider"></span>
+              </label>
+            </div>
+            <div class="row sub-row">
+              <div>
+                <div class="label">合并为单个音频</div>
+                <div class="desc">关闭则逐段下载 MP3；开启输出 WAV</div>
+              </div>
+              <label class="toggle">
+                <input type="checkbox" id="toggleDownloadAudioMerge" checked />
+                <span class="slider"></span>
+              </label>
+            </div>
+            <div class="row sub-row">
+              <div>
+                <div class="label">段间空白</div>
+                <div class="desc">合并音频时每段之间插入的静音时长</div>
+              </div>
+              <input type="number" id="downloadSilenceSeconds" class="number-input" min="0" max="30" step="0.5" value="0" />
+            </div>
+            <div class="row sub-row">
+              <div>
+                <div class="label">PDF + 音频打包</div>
+                <div class="desc">同时开启 PDF 和音频合并时，输出一个包含 PDF 与 WAV 的 ZIP</div>
+              </div>
+              <label class="toggle">
+                <input type="checkbox" id="toggleDownloadBundle" checked />
+                <span class="slider"></span>
+              </label>
+            </div>
+          </section>
+
+          <section class="section">
+            <div class="row">
+              <div>
+                <div class="label">下载单页</div>
+                <div class="desc">在阅读器/听力页显示“下载本页”按钮</div>
+              </div>
+              <label class="toggle">
+                <input type="checkbox" id="toggleDownloadSinglePage" checked />
+                <span class="slider"></span>
+              </label>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+
+    <div class="category">
+      <h2 class="category-title">学生自动登录</h2>
+      <div class="feature-group">
+        <section class="section">
+          <div class="row">
+            <div>
+              <div class="label">启用学生自动登录</div>
+              <div class="desc">自动点击 Go、选择学生图标并输入学生密码</div>
+            </div>
+            <label class="toggle">
+              <input type="checkbox" id="toggleAutoLogin" />
+              <span class="slider"></span>
+            </label>
+          </div>
+          <div class="fields">
+            <label class="field">
+              <span>老师用户名（可选）</span>
+              <input type="text" id="teacherUsername" autocomplete="off" placeholder="留空则使用页面已保存的用户名" />
+            </label>
+            <label class="field">
+              <span>学生名字</span>
+              <input type="text" id="studentName" autocomplete="off" placeholder="与班级图标上的名字一致" />
+            </label>
+            <label class="field">
+              <span>学生密码</span>
+              <input type="password" id="studentPassword" autocomplete="off" placeholder="请输入学生密码" />
+            </label>
+            <button type="button" id="saveAutoLogin" class="save-button">保存自动登录设置</button>
+            <button type="button" id="clearAutoLogin" class="clear-button">清除自动登录信息</button>
+            <div class="desc warn">密码保存在本机扩展存储中（未加密），请勿在公用电脑使用。</div>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <div class="footer">Kids A-Z 答案助手 <span id="version"></span> · 配置保存在本机</div>
+    <div class="saved" id="saved"></div>
+  </div>
+  <script src="options.js"></script>
+</body>
+</html>
